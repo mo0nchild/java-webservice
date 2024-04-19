@@ -1,9 +1,9 @@
 package application.domen.webapi.services.mapper;
 
+import application.domen.webapi.models.requests.NewNotificationInfo;
 import application.domen.webapi.models.responses.NotificationInfo;
 import application.domen.webapi.services.repository.entities.NotificationEntity;
 import org.mapstruct.*;
-import org.springframework.core.convert.converter.Converter;
 
 @Mapper(
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -12,5 +12,5 @@ import org.springframework.core.convert.converter.Converter;
 )
 public interface INotificationMapper {
     public NotificationInfo toDto(NotificationEntity entity);
-    public NotificationEntity toEntity(NotificationInfo model);
+    public NotificationEntity toEntity(NewNotificationInfo model);
 }

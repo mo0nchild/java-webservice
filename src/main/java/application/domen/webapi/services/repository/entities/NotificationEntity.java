@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +22,7 @@ public class NotificationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    private String id;
+    private Long id;
 
     @Column(name = "email")
     private String email;
@@ -31,4 +32,7 @@ public class NotificationEntity {
 
     @Column(name = "meeting_time")
     private LocalDateTime meetingTime;
+
+    @Column(name = "uuid")
+    private UUID uuid;
 }

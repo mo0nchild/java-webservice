@@ -1,5 +1,6 @@
 package application.domen.webapi.services.mapper;
 
+import application.domen.webapi.models.requests.NewNotificationInfo;
 import application.domen.webapi.models.responses.NotificationInfo;
 import application.domen.webapi.services.repository.entities.NotificationEntity;
 import org.springframework.stereotype.Component;
@@ -13,16 +14,17 @@ public class NotificationMapper implements INotificationMapper {
         var builder = NotificationInfo.builder()
                 .email(entity.getEmail())
                 .meetingTime(entity.getMeetingTime())
-                .auditoryId(entity.getAuditoryId());
+                .auditoryId(entity.getAuditoryId())
+                .notificationId(entity.getUuid());
         return builder.build();
     }
     @Override
-    public NotificationEntity toEntity(NotificationInfo model) {
+    public NotificationEntity toEntity(NewNotificationInfo model) {
         var builder = NotificationEntity.builder()
                 .email(model.getEmail())
                 .meetingTime(model.getMeetingTime())
                 .auditoryId(model.getAuditoryId())
-                .id("");
+                .uuid(UUID.randomUUID());
         return builder.build();
     }
 }
