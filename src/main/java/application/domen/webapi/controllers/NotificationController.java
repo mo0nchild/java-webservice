@@ -7,6 +7,7 @@ import application.domen.webapi.services.notification.INotificationService;
 import application.domen.webapi.services.notification.NotificationService;
 import application.domen.webapi.services.notification.infastructure.NotificationError;
 import application.domen.webapi.services.repository.NotificationRepository;
+import application.domen.webapi.services.validation.ValidationEmail;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,15 @@ import java.util.UUID;
 public class NotificationController {
     @Autowired
     private final INotificationService notificationService;
+    @Autowired
+    private final ValidationEmail validation;
     @PostMapping("/add")
     public ResponseEntity<String> add(@RequestBody NewNotificationInfo request) {
         try {
+            this.validation.checkValidationRules(request.getEmail());
+            if(!this.validation.getErrorMessage().isEmpty()) {
+                return ResponseEntity.badRequest().body("Неверный формат Email");
+            }
             this.notificationService.addNotification(request);
             return ResponseEntity.ok("Запись успешно добавлена");
         }
