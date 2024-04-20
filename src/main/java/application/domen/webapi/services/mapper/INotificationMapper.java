@@ -1,8 +1,8 @@
 package application.domen.webapi.services.mapper;
 
-import application.domen.webapi.models.requests.NewNotificationInfo;
 import application.domen.webapi.models.responses.NotificationInfo;
 import application.domen.webapi.services.repository.entities.NotificationEntity;
+import application.domen.webapi.models.requests.NewNotificationInfo;
 import org.mapstruct.*;
 
 @Mapper(

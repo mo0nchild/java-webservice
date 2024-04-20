@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -27,12 +28,21 @@ public class NotificationEntity {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "status")
+    private boolean status;
+
     @Column(name = "auditory_id")
     private int auditoryId;
+
+    @Column(name = "message")
+    private String message;
 
     @Column(name = "meeting_time")
     private LocalDateTime meetingTime;
 
     @Column(name = "uuid")
     private UUID uuid;
+
+    @Column(name = "meeting_id")
+    private UUID meetingId;
 }

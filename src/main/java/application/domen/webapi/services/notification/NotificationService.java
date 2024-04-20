@@ -1,17 +1,19 @@
 package application.domen.webapi.services.notification;
 
-import application.domen.webapi.models.requests.NewNotificationInfo;
+import application.domen.webapi.models.requests.ChangeStatusInfo;
 import application.domen.webapi.models.responses.NotificationInfo;
 import application.domen.webapi.services.mapper.NotificationMapper;
 import application.domen.webapi.services.notification.infastructure.NotificationError;
+import application.domen.webapi.services.publisher.IPublisherService;
+import application.domen.webapi.models.requests.NewNotificationInfo;
 import application.domen.webapi.services.repository.NotificationRepository;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,31 +21,30 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@Slf4j
 @AllArgsConstructor
 @Setter
 public class NotificationService implements INotificationService {
+    private final Logger logger = LoggerFactory.getLogger(NotificationService.class);
     @Autowired
     private final NotificationRepository repository;
     @Autowired
     private final NotificationMapper mapper;
     @Autowired
-    private final JavaMailSender emailSender;
+    private final IPublisherService publisher;
     @Autowired
-    private final Environment enviroment;
+    private final Environment environment;
     @Override
     public void addNotification(NewNotificationInfo info) throws NotificationError {
         try {
-            var senderEmail = this.enviroment.getProperty("spring.mail.username");
-            this.emailSender.send(new SimpleMailMessage() {{
-                setFrom(senderEmail);
-                setTo(info.getEmail());
-                setSubject("Приглашение на встречу");
-                setText(String.format("Время встречи: %s", info.getMeetingTime()));
-            }});
-            this.repository.save(this.mapper.toEntity(info));
+            var mappedInfo = this.mapper.toEntity(info);
+            if(!this.publisher.publishMessage(info, mappedInfo.getUuid())) {
+                throw new Exception("Не удалось отправить сообщение");
+            }
+            var result = this.repository.save(mappedInfo);
         }
         catch (Exception error) {
-            System.out.println(error.getMessage());
+            this.logger.warn(error.getMessage());
             throw new NotificationError("Не удалось добавить запись");
         }
     }
@@ -54,17 +55,41 @@ public class NotificationService implements INotificationService {
             this.repository.delete(record);
         }
         catch (Exception error) {
+            this.logger.warn(error.getMessage());
             throw new NotificationError("Не удалось добавить запись");
         }
     }
     @Override
+    public void changeStatus(ChangeStatusInfo info) throws NotificationError {
+        try {
+            var record = this.repository.getByUuid(info.getUuid()).orElseThrow(Exception::new);
+            record.setStatus(info.isStatus());
+            this.repository.save(record);
+        }
+        catch (Exception error) {
+            this.logger.warn(error.getMessage());
+            throw new NotificationError("Не удалось изменить статус");
+        }
+    }
+    @Override
     public Optional<NotificationInfo> getByUuid(UUID id) {
-        var record = this.repository.getByUuid(id);
-        return record.map(this.mapper::toDto).or(Optional::empty);
+        return this.repository.getByUuid(id).map(this.mapper::toDto).or(Optional::empty);
     }
     @Override
     public List<NotificationInfo> getAllByEmail(String email) {
         return this.repository.getByEmail(email).stream().map(this.mapper::toDto).toList();
+    }
+    @Override
+    public List<NotificationInfo> getAllByEmail(String email, boolean status) {
+        return this.repository.getByEmail(email, status).stream().map(this.mapper::toDto).toList();
+    }
+    @Override
+    public List<NotificationInfo> getByMeeting(UUID uuid) {
+        return this.repository.getByMeeting(uuid).stream().map(this.mapper::toDto).toList();
+    }
+    @Override
+    public List<NotificationInfo> getByMeeting(UUID uuid, boolean status) {
+        return this.repository.getByMeeting(uuid, status).stream().map(this.mapper::toDto).toList();
     }
     @Override
     public List<NotificationInfo> getAll() {

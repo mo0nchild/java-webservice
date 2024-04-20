@@ -14,5 +14,9 @@ public class NotificationInfo {
     private UUID notificationId;
     private String email;
     private LocalDateTime meetingTime;
+
     private Integer auditoryId;
+    private String message;
+    private boolean status;
+    private UUID meetingId;
 }

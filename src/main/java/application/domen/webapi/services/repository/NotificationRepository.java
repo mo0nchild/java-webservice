@@ -22,4 +22,13 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 
     @Query("SELECT u FROM notifications u WHERE u.email = ?1")
     public List<NotificationEntity> getByEmail(String email);
+
+    @Query("SELECT u FROM notifications u WHERE u.email = ?1 AND u.status = ?2")
+    public List<NotificationEntity> getByEmail(String email, boolean status);
+
+    @Query("SELECT u FROM notifications u WHERE u.meetingId = ?1 AND u.status = ?2")
+    public List<NotificationEntity> getByMeeting(UUID meetingId, boolean status);
+
+    @Query("SELECT u FROM notifications u WHERE u.meetingId = ?1")
+    public List<NotificationEntity> getByMeeting(UUID meetingId);
 }

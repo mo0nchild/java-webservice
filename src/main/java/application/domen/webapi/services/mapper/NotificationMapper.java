@@ -15,7 +15,10 @@ public class NotificationMapper implements INotificationMapper {
                 .email(entity.getEmail())
                 .meetingTime(entity.getMeetingTime())
                 .auditoryId(entity.getAuditoryId())
-                .notificationId(entity.getUuid());
+                .notificationId(entity.getUuid())
+                .message(entity.getMessage())
+                .status(entity.isStatus())
+                .meetingId(entity.getMeetingId());
         return builder.build();
     }
     @Override
@@ -24,7 +27,10 @@ public class NotificationMapper implements INotificationMapper {
                 .email(model.getEmail())
                 .meetingTime(model.getMeetingTime())
                 .auditoryId(model.getAuditoryId())
-                .uuid(UUID.randomUUID());
+                .uuid(UUID.randomUUID())
+                .message(model.getMessage())
+                .status(false)
+                .meetingId(model.getMeetingId());
         return builder.build();
     }
 }

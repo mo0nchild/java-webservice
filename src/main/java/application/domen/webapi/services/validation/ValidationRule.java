@@ -4,6 +4,7 @@ import java.util.List;
 
 public abstract class ValidationRule {
     private ValidationRule next;
+    public ValidationRule() { super(); }
     public static ValidationRule link(ValidationRule first, ValidationRule... chain) {
         var head = first;
         for (var nextInChain : chain) {

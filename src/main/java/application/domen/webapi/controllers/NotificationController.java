@@ -1,20 +1,19 @@
 package application.domen.webapi.controllers;
 
-import application.domen.webapi.models.requests.NewNotificationInfo;
+import application.domen.webapi.models.requests.ChangeStatusInfo;
 import application.domen.webapi.models.responses.NotificationInfo;
-import application.domen.webapi.services.mapper.NotificationMapper;
-import application.domen.webapi.services.notification.INotificationService;
-import application.domen.webapi.services.notification.NotificationService;
-import application.domen.webapi.services.notification.infastructure.NotificationError;
-import application.domen.webapi.services.repository.NotificationRepository;
 import application.domen.webapi.services.validation.ValidationEmail;
+import application.domen.webapi.models.requests.NewNotificationInfo;
+import application.domen.webapi.services.notification.INotificationService;
+import application.domen.webapi.services.notification.infastructure.NotificationError;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class NotificationController {
+    private final Logger logger = LoggerFactory.getLogger(NotificationController.class);
     @Autowired
     private final INotificationService notificationService;
     @Autowired
@@ -64,5 +64,10 @@ public class NotificationController {
     public ResponseEntity<List<NotificationInfo>> getByEmail(
             @RequestParam(value = "email") String email) {
         return ResponseEntity.ok(this.notificationService.getAllByEmail(email));
+    }
+    @GetMapping("/getByStatus")
+    public ResponseEntity<List<NotificationInfo>> getByStatus(
+            @RequestParam String email, @RequestParam boolean status) {
+        return ResponseEntity.ok(this.notificationService.getAllByEmail(email, status));
     }
 }

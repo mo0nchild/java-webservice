@@ -17,6 +17,6 @@ public class LengthRule extends ValidationRule {
             errorMessage.add("Длина почты должна быть от " + min + " до " + max + " символов") ;
             return false;
         }
-        return checkNext(value,errorMessage);
+        return checkNext(value, errorMessage);
     }
 }
