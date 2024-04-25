@@ -53,7 +53,7 @@ public class NotificationController {
         }
     }
     @GetMapping("/getByUuid")
-    public ResponseEntity<NotificationInfo> getByEmail(@RequestParam(value = "uuid") UUID uuid) {
+    public ResponseEntity<NotificationInfo> getByUuid(@RequestParam(value = "uuid") UUID uuid) {
         var result = this.notificationService.getByUuid(uuid);
         return result.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.badRequest().body(null));
     }
