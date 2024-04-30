@@ -3,24 +3,18 @@ package application.domen.webapi.configurations;
 import application.domen.webapi.controllers.MeetingController;
 import application.domen.webapi.controllers.NotificationController;
 import application.domen.webapi.models.requests.NewNotificationInfo;
-import application.domen.webapi.services.mapper.NotificationMapper;
+import application.domen.webapi.services.mappers.notification.NotificationMapper;
 import application.domen.webapi.services.notification.INotificationService;
 import application.domen.webapi.services.notification.NotificationService;
 import application.domen.webapi.services.publisher.IPublisherService;
-import application.domen.webapi.services.publisher.PublisherService;
-import application.domen.webapi.services.repository.MemNotificationRepository;
-import application.domen.webapi.services.repository.entities.NotificationEntity;
-import application.domen.webapi.services.repository.entities.NotificationStatus;
 import application.domen.webapi.services.repository.infrastructure.NotificationRepository;
 import application.domen.webapi.services.validation.ValidationEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
 import org.thymeleaf.TemplateEngine;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 

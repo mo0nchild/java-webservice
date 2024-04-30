@@ -1,7 +1,7 @@
 package application.domen.webapi.services.publisher;
 
-import application.domen.webapi.controllers.NotificationController;
-import application.domen.webapi.models.requests.NewNotificationInfo;
+import application.domen.webapi.models.commons.MeetingInfo;
+import application.domen.webapi.models.responses.NotificationInfoResult;
 import application.domen.webapi.services.repository.entities.NotificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
@@ -31,17 +31,21 @@ public class PublisherService implements IPublisherService {
     private final TemplateEngine templateEngine;
     @Autowired
     private final Environment environment;
-    private final Context buildContext(NewNotificationInfo info, UUID uuid) {
+    private final Context buildContext(MeetingInfo info, UUID uuid, String title, boolean actions) {
         var context = new Context();
-        context.setVariable("message", info.getMessage().isEmpty()
-                ? "Мероприятие проводится на базе общей платформы ВГТУ" : info.getMessage());
+        context.setVariable("message", info.getDescription().isEmpty()
+                ? "Мероприятие проводится на базе общей платформы ВГТУ" : info.getDescription());
+        context.setVariable("title", title);
         context.setVariable("time", info.getMeetingTime());
-        context.setVariable("place", info.getAuditoryId());
+        context.setVariable("name", info.getName());
+        context.setVariable("place", info.getPlace());
+        context.setVariable("actions", actions);
+        if(!actions) return context;
 
         var address = this.environment.getProperty("webapi.publish.ip", String.class);
-        var acceptUrl = String.format("http://%s:8080/api/meeting/status?status=%s&uuid=%s",
+        var acceptUrl = String.format("http://%s:8080/api/status?status=%s&uuid=%s",
                 address, NotificationStatus.ACCEPTED, uuid);
-        var rejectUrl = String.format("http://%s:8080/api/meeting/status?status=%s&uuid=%s",
+        var rejectUrl = String.format("http://%s:8080/api/status?status=%s&uuid=%s",
                 address, NotificationStatus.REJECTED, uuid);
         this.logger.info(acceptUrl);
         context.setVariable("acceptUrl", acceptUrl);
@@ -49,7 +53,7 @@ public class PublisherService implements IPublisherService {
         return context;
     }
     @Override
-    public boolean publishMessage(NewNotificationInfo info, UUID uuid) {
+    public boolean publishInviteMessage(NotificationInfoResult info, String title) {
         var mimeMessage = emailSender.createMimeMessage();
         var publishing = this.environment.getProperty("webapi.publish.enabled", Boolean.class);
         try {
@@ -57,11 +61,35 @@ public class PublisherService implements IPublisherService {
                 setTo(info.getEmail());
                 setSubject("Приглашение на встречу");
             }};
-            helper.setText(templateEngine.process("email-template", this.buildContext(info, uuid)), true);
+            var context = this.buildContext(info.getMeeting(), info.getUuid(), title, true);
+            helper.setText(templateEngine.process("email-template", context), true);
             helper.setFrom(Objects.requireNonNull(this.environment.getProperty("spring.mail.username")));
             this.emailSender.send(mimeMessage);
         }
-        catch(Exception error) { return !Boolean.TRUE.equals(publishing); }
+        catch(Exception error) {
+            System.out.println(error.getMessage());
+            return !Boolean.TRUE.equals(publishing);
+        }
+        return true;
+    }
+    @Override
+    public boolean publishUpdateMessage(NotificationInfoResult info, String title) {
+        var mimeMessage = emailSender.createMimeMessage();
+        var publishing = this.environment.getProperty("webapi.publish.enabled", Boolean.class);
+        try {
+            var helper = new MimeMessageHelper(mimeMessage, "UTF-8") {{
+                setTo(info.getEmail());
+                setSubject(title);
+            }};
+            var context = this.buildContext(info.getMeeting(), info.getUuid(), title, false);
+            helper.setText(templateEngine.process("email-template", context), true);
+            helper.setFrom(Objects.requireNonNull(this.environment.getProperty("spring.mail.username")));
+            this.emailSender.send(mimeMessage);
+        }
+        catch(Exception error) {
+            System.out.println(error.getMessage());
+            return !Boolean.TRUE.equals(publishing);
+        }
         return true;
     }
 }

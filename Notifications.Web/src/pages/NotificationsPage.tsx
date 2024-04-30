@@ -15,11 +15,20 @@ export interface NotificationsPageState {
 }
 export interface NotificationsPageProps extends NavigatorProps {
 }
-export type NotificationsResponse = {
+export type MeetingResponse = {
+	name: string,
+	description: string,
+	status: string,
+	uuid: string,
+	place: string,
 	meetingTime: string,
-	message: string,
-	auditoryId: number,
-	notificationId: string
+	ownerEmail: string
+}
+export type NotificationsResponse = {
+	email: string,
+	status: string,
+	uuid: string,
+	meeting: MeetingResponse
 }
 class NotificationsPage extends React.Component<NotificationsPageProps, NotificationsPageState> {
 	private currentEmail: string | null = null;
@@ -63,9 +72,8 @@ class NotificationsPage extends React.Component<NotificationsPageProps, Notifica
 			.catch(() => this.setState({ loaded: 'failed' }))
 	}
 	private onSelectionItem = (index: number): void => {
-        this.props.navigator('/notification', { 
-			state: { uuid: this.state.list[index].notificationId } 
-		});
+		const { uuid } = this.state.list[index];
+        this.props.navigator('/notification', { state: { uuid: uuid } });
 	}
 	public override render(): React.ReactNode {
 		type MainContentProps = Pick<NotificationsPageState, 'list' | 'loaded'>; 
@@ -92,11 +100,17 @@ class NotificationsPage extends React.Component<NotificationsPageProps, Notifica
 				case 'complete':
 					return (
 					<NotificationsList selectionCallback={this.onSelectionItem}
-						list={list.map<NotificationData>(({message, meetingTime, auditoryId}) => {
+						list={list.map<NotificationData>(({meeting}) => {
 							return { 
-								place: `Аудитория ${auditoryId}`, 
-								time: meetingTime,
-								message: message.length <= 0 ? 'Описание отсутсвует' : message, 
+								status: ((status: string) => {
+									switch(status) {
+										case 'NEWER': return 'Новое';
+										case 'UPDATED': return 'Обновлен';
+										case 'CANCELED': return 'Отменен'
+										default: throw 'Нельзя конвертировать'
+									}
+								})(meeting.status),
+								name: meeting.name 
 							}
 						})} />
 					)

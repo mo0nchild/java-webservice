@@ -5,8 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum NotificationStatus {
-    CHECKING("checking"), CHECKED("checked"),
-    REJECTED("rejected"), ACCEPTED("accepted");
+public enum MeetingStatus {
+    NEWER("newer"), UPDATED("updated"), CANCELED("canceled");
     private final String name;
 }

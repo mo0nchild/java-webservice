@@ -3,22 +3,20 @@ import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 
 export type NotificationData = {
-    readonly message: string;
-    readonly time: string;
-    readonly place: string;
+    readonly status: string;
+    readonly name: string;
 };
 export type NotificationProps = {
     list: NotificationData[],
     selectionCallback: (index: number) => void
 }
 const columns: GridColDef[] = [
-	{ field: 'time', headerName: 'Время', width: 140 },
-	{ field: 'place', headerName: 'Место', width: 140 },
-	{ field: 'message', headerName: 'Описание', width: 300 },
+	{ field: 'status', headerName: 'Статус', width: 120, resizable: false },
+	{ field: 'name', headerName: 'Название', width: 240, flex: 1 },
 ];
 export function NotificationsList(props: NotificationProps): React.JSX.Element {
-    const mappedList = props.list.map(({message, place, time}, index) => {
-        return {id: index, message: message, place: place, time: time}
+    const mappedList = props.list.map((item, index) => {
+        return {id: index, ...item}
     })
     const initState = {
         pagination: {

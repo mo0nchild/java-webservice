@@ -76,18 +76,17 @@
     </div>
     <div class="content-placement">
         <div class="main-content">
-            <h2>Приглашаем вас посетить мероприятие!</h2>
-    
+            <h2>[[${title}]]</h2>
+            <p>Название: <span>[[${name}]]</span></p>
             <p>Время встречи: <span>[[${time}]]</span></p>
-            <p>Место встречи: аудитория №<span>[[${place}]]</span></p>
+            <p>Место встречи: <span>[[${place}]]</span></p>
 
             <div style="height: 0px; border: 1px solid #AAA;"></div>
-    
             <p>Описание: <span>[[${message}]]</span></p>
-            <div class="main-link">
+            <div th:if="${actions == true}" class="main-link">
                 <a th:href="${acceptUrl}">Принимаю участие</a>
             </div>
-            <div class="main-link" style="margin: 40px 0px 20px; ">
+            <div th:if="${actions == true}" class="main-link" style="margin: 40px 0px 20px; ">
                 <a th:href="${rejectUrl}" style="background-color: #ed6c02;">Отказаться</a>
             </div>
         </div>

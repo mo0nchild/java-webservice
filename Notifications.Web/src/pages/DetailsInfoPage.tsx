@@ -46,11 +46,10 @@ class DetailsInfoPage extends React.Component<DetailsInfoPageProps, DetailsInfoP
 		if(this.locationData == null) throw 'Данные не были отправлены';
 		this.setDelailsInfo(this.locationData?.uuid)
 	}
-	private onAgreedClicked = (accept: boolean): void => {
+	private onAgreedClicked = (newStatus: string): void => {
 		if(this.locationData == null) throw 'Данные не были отправлены';
 		const { uuid } = this.locationData;
-		const status = accept ? 'ACCEPTED' : 'REJECTED'
-		const url = `http://localhost:8080/api/meeting/status?status=${status}&uuid=${uuid}`
+		const url = `http://localhost:8080/api/status?status=${newStatus}&uuid=${uuid}`
 		fetch(url, { method: 'GET' })
 			.then((value) => {
 				this.setState({loaded: 'complete'})
@@ -64,24 +63,34 @@ class DetailsInfoPage extends React.Component<DetailsInfoPageProps, DetailsInfoP
 		const MainContent: React.FC<DetailsInfoPageState> = (props: DetailsInfoPageState) => {
 			const { info, loaded } = props
 			let content: React.JSX.Element | undefined = undefined;
-			const message = (info?.message as string)
+			const meeting = info?.meeting;
 			switch (loaded) {
 				case 'complete': content = ( 
 					<div style={{alignSelf: 'self-start', width: '100%'}}>
 						<h3>Приглашение на встречу</h3>
 						<hr/>
-						<div style={{margin: '0px 0px 30px'}}>
-							<p>Время: {info?.meetingTime}</p>
-							<p>Место: аудитория №{info?.auditoryId}</p>
-							<p>Описание: {message.length <= 0 ? 'описание отсутствует': message}</p>
+						<div style={{margin: '0px 0px 40px'}}>
+							<p>Название: {meeting?.name}</p>
+							<p>Организатор: {meeting?.ownerEmail}</p>
 						</div>
-						<Button color='primary' variant="contained" onClick={() => this.onAgreedClicked(true)}>
-							Согласиться
-						</Button>
-						<Button variant="contained" color='warning' style={{marginLeft: '20px'}} 
-							onClick={() => this.onAgreedClicked(false)}>
-							Отказаться
-						</Button>
+						<div style={{margin: '0px 0px 40px'}}>
+							<p>Время: {meeting?.meetingTime}</p>
+							<p>Место: {meeting?.place}</p>
+							<p>Описание: {meeting!.description.length <= 0 ? 'описание отсутствует': meeting?.description}</p>
+						</div>
+						{ (meeting?.status != 'CANCELED') ? 
+						<div>
+							<Button color='primary' variant="contained" onClick={() => this.onAgreedClicked('ACCEPTED')}>
+								Согласиться
+							</Button>
+							<Button variant="contained" color='warning' style={{marginLeft: '20px'}} 
+								onClick={() => this.onAgreedClicked('REJECTED')}>
+								Отказаться
+							</Button>
+						</div> : 	
+						<Button color='primary' variant="contained" onClick={() => this.onAgreedClicked('CHECKED')}>
+							Прочитать
+						</Button> }
 					</div>
 				)
 				break;	
@@ -147,7 +156,7 @@ const detailsHeaderStyle: React.CSSProperties = {
 	flexDirection: 'row'
 }
 const detailsHeaderTitleStyle: React.CSSProperties = {
-	color: 'white',
+color: 'white',
 	display: 'flex',
 	flexGrow: 1,
 	alignSelf: 'center',

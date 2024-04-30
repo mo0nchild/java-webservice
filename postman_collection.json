@@ -8,15 +8,15 @@
 	},
 	"item": [
 		{
-			"name": "Meeting",
+			"name": "Meetings",
 			"item": [
 				{
-					"name": "GetByMeeting",
+					"name": "GetByMeetingUuid",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/meeting/getByUuid?uuid=162bdf5b-b6fd-43d0-9ee4-296baac1564a",
+							"raw": "http://localhost:8080/api/meeting/getByUuid?uuid=a423a304-a7c2-4a52-81a1-8465b08add57",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -30,7 +30,7 @@
 							"query": [
 								{
 									"key": "uuid",
-									"value": "162bdf5b-b6fd-43d0-9ee4-296baac1564a"
+									"value": "a423a304-a7c2-4a52-81a1-8465b08add57"
 								}
 							]
 						}
@@ -43,7 +43,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/meeting/getByStatus?uuid=162bdf5b-b6fd-43d0-9ee4-296baac1564a&status=CHECKING",
+							"raw": "http://localhost:8080/api/meeting/getByStatus?uuid=58e345da-ce41-4931-a60d-29562d337084&status=ACCEPTED",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -57,11 +57,11 @@
 							"query": [
 								{
 									"key": "uuid",
-									"value": "162bdf5b-b6fd-43d0-9ee4-296baac1564a"
+									"value": "58e345da-ce41-4931-a60d-29562d337084"
 								},
 								{
 									"key": "status",
-									"value": "CHECKING"
+									"value": "ACCEPTED"
 								}
 							]
 						}
@@ -69,16 +69,13 @@
 					"response": []
 				},
 				{
-					"name": "ChangeStatus",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
+					"name": "AddMeeting",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n    \"name\": \"Уборка территории\",\r\n    \"description\": \"Приглашаем вас на особую уборку\",\r\n    \"uuid\": \"a423a304-a7c2-4ae2-81a1-8465208add57\",\r\n    \"place\": \"аудитория 10\",\r\n    \"meetingTime\": \"2021-05-03T18:52:23\",\r\n    \"ownerEmail\": \"daniltulenev26@gmail.com\",\r\n    \"members\": [\r\n        \"daniltulenev26@gmail.com\",\r\n        \"jkfgkldf@gmail.com\",\r\n        \"hjfgdklhg@gmail.com\"\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -86,7 +83,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/meeting/status?status=REJECTED&uuid=4012e8e5-aa08-4bbe-a08c-0ee478733d34",
+							"raw": "http://localhost:8080/api/meeting/add",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -95,16 +92,138 @@
 							"path": [
 								"api",
 								"meeting",
-								"status"
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteMeeting",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/meeting/delete?uuid=a423a304-a7c2-4ae2-81a1-8465208add57",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"meeting",
+								"delete"
 							],
 							"query": [
 								{
-									"key": "status",
-									"value": "REJECTED"
-								},
+									"key": "uuid",
+									"value": "a423a304-a7c2-4ae2-81a1-8465208add57"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateMeeting",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Не фигня полное этот фильм\",\r\n    \"description\": \"Приглашаем вас на крутое мероприятие\",\r\n    \"uuid\": \"a423a304-a7c2-4ae2-81a1-8465208add57\",\r\n    \"place\": \"аудитория 2\",\r\n    \"meetingTime\": \"2021-05-03T18:52:44\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/meeting/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"meeting",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllMeetings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/meeting/getAll",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"meeting",
+								"getAll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetByOwnerEmail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/meeting/getByOwner?email=daniltulenev26@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"meeting",
+								"getByOwner"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "daniltulenev26@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CancelMeeting",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/meeting/cancel?uuid=f423a352-a7c2-eae0-81a1-8465208add57",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"meeting",
+								"cancel"
+							],
+							"query": [
 								{
 									"key": "uuid",
-									"value": "4012e8e5-aa08-4bbe-a08c-0ee478733d34"
+									"value": "f423a352-a7c2-eae0-81a1-8465208add57"
 								}
 							]
 						}
@@ -114,7 +233,7 @@
 			]
 		},
 		{
-			"name": "GetInfo",
+			"name": "Notifications",
 			"item": [
 				{
 					"name": "GetAllNotifications",
@@ -168,7 +287,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/getByUuid?uuid=bae79f81-b15a-4f2a-9a1d-a0ce9eabbce1",
+							"raw": "http://localhost:8080/api/getByUuid?uuid=adbf11d4-4f9c-44f9-8f45-d1474cd81dec",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -181,7 +300,7 @@
 							"query": [
 								{
 									"key": "uuid",
-									"value": "bae79f81-b15a-4f2a-9a1d-a0ce9eabbce1"
+									"value": "adbf11d4-4f9c-44f9-8f45-d1474cd81dec"
 								}
 							]
 						}
@@ -194,7 +313,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/getByStatus?status=ACCEPTED&email=daniltulenev26@gmail.com",
+							"raw": "http://localhost:8080/api/getByStatus?status=CHECKING&email=daniltulenev26@gmail.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -207,7 +326,7 @@
 							"query": [
 								{
 									"key": "status",
-									"value": "ACCEPTED"
+									"value": "CHECKING"
 								},
 								{
 									"key": "email",
@@ -217,19 +336,14 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "ChangeState",
-			"item": [
+				},
 				{
 					"name": "DeleteNotification",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/delete?uuid=bae79f81-b15a-4f2a-9a1d-a0ce9eabbce1",
+							"raw": "http://localhost:8080/api/delete?uuid=b3c9f540-17ab-45ce-b968-b9285a8547e1",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -242,7 +356,7 @@
 							"query": [
 								{
 									"key": "uuid",
-									"value": "bae79f81-b15a-4f2a-9a1d-a0ce9eabbce1"
+									"value": "b3c9f540-17ab-45ce-b968-b9285a8547e1"
 								}
 							]
 						}
@@ -250,13 +364,16 @@
 					"response": []
 				},
 				{
-					"name": "AddNotification",
+					"name": "ChangeStatus",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"daniltulenev26@gmail.com\",\r\n    \"meetingTime\": \"2014-01-08T04:05:06\",\r\n    \"auditoryId\": 1,\r\n    \"message\": \"\",\r\n    \"meetingId\": \"162bdf5b-b6fd-43d0-9ee4-296baac1564a\"\r\n}",
+							"raw": "",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -264,7 +381,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/add",
+							"raw": "http://localhost:8080/api/status?status=ACCEPTED&uuid=3bea061b-926d-4460-b3a4-b5d7b3cd702b",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -272,7 +389,17 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"add"
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "ACCEPTED"
+								},
+								{
+									"key": "uuid",
+									"value": "3bea061b-926d-4460-b3a4-b5d7b3cd702b"
+								}
 							]
 						}
 					},

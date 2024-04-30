@@ -4,7 +4,7 @@ import application.domen.webapi.configurations.TestConfiguration;
 import application.domen.webapi.controllers.MeetingController;
 import application.domen.webapi.controllers.NotificationController;
 import application.domen.webapi.models.requests.NewNotificationInfo;
-import application.domen.webapi.models.responses.NotificationInfo;
+import application.domen.webapi.models.responses.NotificationInfoResult;
 import application.domen.webapi.services.repository.entities.NotificationStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -75,7 +75,7 @@ public class WebapiApplicationTests {
 		Assertions.assertThat(result.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(200));
 		Assertions.assertThat(result.getBody()).isNotEmpty();
 
-		var mapped = result.getBody().stream().map(NotificationInfo::getEmail).toList();
+		var mapped = result.getBody().stream().map(NotificationInfoResult::getEmail).toList();
 		Assertions.assertThat(mapped).contains("user1@gmail.com");
 		Assertions.assertThat(result.getBody().size()).isEqualTo(2);
 	}

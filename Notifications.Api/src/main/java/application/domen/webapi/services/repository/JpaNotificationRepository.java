@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Repository
 public interface JpaNotificationRepository extends NotificationRepository,
-        JpaRepository<NotificationEntity, UUID> {
+        JpaRepository<NotificationEntity, Long> {
     @Query("SELECT u FROM notifications u WHERE u.id = ?1")
     @Override
     public Optional<NotificationEntity> getById(Integer id);
@@ -30,10 +30,4 @@ public interface JpaNotificationRepository extends NotificationRepository,
     @Query("SELECT u FROM notifications u WHERE u.email = ?1 AND u.status = ?2")
     @Override
     public List<NotificationEntity> getByEmail(String email, NotificationStatus status);
-    @Query("SELECT u FROM notifications u WHERE u.meetingId = ?1 AND u.status = ?2")
-    @Override
-    public List<NotificationEntity> getByMeeting(UUID meetingId, NotificationStatus status);
-    @Query("SELECT u FROM notifications u WHERE u.meetingId = ?1")
-    @Override
-    public List<NotificationEntity> getByMeeting(UUID meetingId);
 }

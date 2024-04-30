@@ -12,8 +12,9 @@ import java.util.List;
 @Getter
 public class ValidationEmail {
     private final List<String> errorMessage = new ArrayList<>();
-    public void checkValidationRules(String value) {
+    public boolean checkValidationRules(String value) {
         this.errorMessage.clear();
         ValidationRule.link(new LengthRule(5, 50), new FormatRule()).check(value, errorMessage);
+        return this.errorMessage.isEmpty();
     }
 }
