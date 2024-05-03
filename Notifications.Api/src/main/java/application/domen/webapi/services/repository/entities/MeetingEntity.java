@@ -42,6 +42,6 @@ public class MeetingEntity {
     @Column(name = "owner_email")
     private String ownerEmail;
 
-    @OneToMany(mappedBy="meeting", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy="meeting", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private Set<NotificationEntity> notifications;
 }

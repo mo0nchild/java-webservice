@@ -15,4 +15,6 @@ public interface NotificationRepository {
 
     public List<NotificationEntity> getByEmail(String email, NotificationStatus status);
     public List<NotificationEntity> getByEmail(String email);
+    <T extends NotificationEntity> T save(T entity);
+    void delete(NotificationEntity entity);
 }

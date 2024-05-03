@@ -1,6 +1,7 @@
 package application.domen.webapi.services.publisher;
 
 import application.domen.webapi.models.commons.MeetingInfo;
+import application.domen.webapi.models.responses.MeetingInfoResult;
 import application.domen.webapi.models.responses.NotificationInfoResult;
 import application.domen.webapi.services.repository.entities.NotificationStatus;
 import lombok.AllArgsConstructor;
@@ -83,6 +84,32 @@ public class PublisherService implements IPublisherService {
             }};
             var context = this.buildContext(info.getMeeting(), info.getUuid(), title, false);
             helper.setText(templateEngine.process("email-template", context), true);
+            helper.setFrom(Objects.requireNonNull(this.environment.getProperty("spring.mail.username")));
+            this.emailSender.send(mimeMessage);
+        }
+        catch(Exception error) {
+            System.out.println(error.getMessage());
+            return !Boolean.TRUE.equals(publishing);
+        }
+        return true;
+    }
+    @Override
+    public boolean publishMeetingOwnerMessage(MeetingInfoResult info, String title) {
+        var mimeMessage = emailSender.createMimeMessage();
+        var publishing = this.environment.getProperty("webapi.publish.enabled", Boolean.class);
+        try {
+            var acceptedCount = info.getNotifications().stream()
+                    .filter(item -> item.getStatus() == NotificationStatus.ACCEPTED).count();
+            var helper = new MimeMessageHelper(mimeMessage, "UTF-8") {{
+                setTo(info.getOwnerEmail());
+                setSubject(title);
+            }};
+            var context = new Context();
+            context.setVariable("title", "Информация о вашем мероприятии");
+            context.setVariable("name", info.getName());
+            context.setVariable("message", info.getDescription());
+            context.setVariable("userCount", acceptedCount);
+            helper.setText(templateEngine.process("owner-template", context), true);
             helper.setFrom(Objects.requireNonNull(this.environment.getProperty("spring.mail.username")));
             this.emailSender.send(mimeMessage);
         }
