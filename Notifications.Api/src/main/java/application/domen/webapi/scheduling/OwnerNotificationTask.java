@@ -9,8 +9,12 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.swing.text.StyledEditorKit;
 
 @Component
 @AllArgsConstructor
@@ -23,8 +27,11 @@ public class OwnerNotificationTask {
     private final IPublisherService publisherService;
     @Autowired
     private final IMeetingMapper meetingMapper;
-    @Scheduled(fixedRateString ="${webapi.fetchMetrics}", initialDelay=1000)
+    @Autowired
+    private final Environment environment;
+    @Scheduled(fixedRateString ="${webapi.ownerTask.rate}", initialDelay=1000)
     public void notificationMeetingOwner() {
+        if (!Boolean.parseBoolean(this.environment.getProperty("webapi.ownerTask.enable"))) return;
         this.dbContext.getMeetingRepository().getAll().forEach(item -> {
             var mappedInfo = this.meetingMapper.toDto(item);
             if (!this.publisherService.publishMeetingOwnerMessage(mappedInfo, "Информация о вашем мероприятии")) {
