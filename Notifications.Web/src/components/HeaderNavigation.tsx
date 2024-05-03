@@ -9,7 +9,7 @@ export default function HeaderNavigation() {
     }, [])
     return (
     <Navbar expand="md" style={EmailNavigationStyle}>
-        <Container>
+        <Container fluid='md'>
             <Navbar.Brand style={{color: 'white'}}>Уведомления</Navbar.Brand>
             <Navbar.Toggle style={{ width: '40px', padding: '0px', borderColor: 'white' }}>
                 <Justify width={30} height={30} color="white"/>

@@ -72,7 +72,7 @@ class OwnerPage extends React.Component<OwnerPageProps, OwnerPageState> {
 	}
 	private onSelectionItem = (index: number): void => {
 		const { uuid } = this.state.list[index];
-        // this.props.navigator('/notification', { state: { uuid: uuid } });
+        this.props.navigator('/owner/meeting', { state: { uuid: uuid } });
 	}
     public override render(): React.ReactNode {
         type MainContentProps = Pick<OwnerPageState, 'list' | 'loaded'>; 
@@ -110,7 +110,7 @@ class OwnerPage extends React.Component<OwnerPageProps, OwnerPageState> {
 									}
 								})(status),
 								name:name,
-                                count: notifications.filter(item => item.status == 'CHECKED').length
+                                count: notifications.filter(item => item.status == 'ACCEPTED').length
 							}
 						})} />
 					)
